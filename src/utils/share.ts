@@ -69,3 +69,30 @@ export const isThinkAction = (data: TrajectoryItem): data is ThinkAction =>
 export const isThinkObservation = (data: TrajectoryItem): data is ThinkObservation =>
   "observation" in data && data.observation === "think" && "source" in data && data.source === "agent";
 
+const delegateInstructionPrefix =
+  "Carefully check whether all key information is provided.";
+
+export const isDelegateMessage = (data: TrajectoryItem): boolean => {
+  const action = (data as { action?: unknown }).action;
+  const source = (data as { source?: unknown }).source;
+  const message = (data as { message?: unknown }).message;
+  const args = (data as { args?: { recall_type?: unknown } }).args;
+
+  if (source !== "user") {
+    return false;
+  }
+
+  if (action === "message" && typeof message === "string") {
+    return message.startsWith(delegateInstructionPrefix);
+  }
+
+  if (action !== "recall" || typeof message !== "string") {
+    return false;
+  }
+
+  if (!message.startsWith("Retrieving content for:")) {
+    return false;
+  }
+
+  return args?.recall_type === "knowledge";
+};

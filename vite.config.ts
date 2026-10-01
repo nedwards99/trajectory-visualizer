@@ -5,8 +5,8 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [react(), viteTsconfigPaths()],
   server: {
-    port: 12000,
-    host: '0.0.0.0',
+    port: 3000,
+    host: 'localhost',
     allowedHosts: ['work-1-ywgwxiwbtfgizmkl.prod-runtime.all-hands.dev', 'localhost'],
     headers: {
       'Access-Control-Allow-Origin': '*',

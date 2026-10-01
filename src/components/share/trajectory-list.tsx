@@ -12,7 +12,10 @@ import {
   isReadAction,
   isReadObservation,
   isEditAction,
-  isEditObservation
+  isEditObservation,
+  isThinkAction,
+  isThinkObservation,
+  isDelegateMessage
 } from "../../utils/share";
 import { CSyntaxHighlighter } from "../syntax-highlighter";
 import {
@@ -28,7 +31,9 @@ import {
   ReadObservationComponent,
   EditActionComponent,
   EditObservationComponent,
-  ErrorObservationComponent
+  ErrorObservationComponent,
+  ThinkActionComponent,
+  ThinkObservationComponent
 } from "./trajectory-list-items";
 import { TrajectoryCard } from "./trajectory-card";
 import { TrajectoryItem } from '../../types/share';
@@ -46,6 +51,11 @@ export const TrajectoryList: React.FC<TrajectoryListProps> = ({ trajectory }) =>
 
     // Filter out null observations
     if ("observation" in item && typeof item.observation === "string" && item.observation === "null") {
+      return false;
+    }
+
+    // Filter out delegate messages
+    if (isDelegateMessage(item)) {
       return false;
     }
 
@@ -94,6 +104,10 @@ export const TrajectoryList: React.FC<TrajectoryListProps> = ({ trajectory }) =>
                 return <EditActionComponent key={index} item={item} />;
               } else if (isEditObservation(item)) {
                 return <EditObservationComponent key={index} observation={item} />;
+              } else if (isThinkAction(item)) {
+                return <ThinkActionComponent key={index} action={item} />;
+              } else if (isThinkObservation(item)) {
+                return <ThinkObservationComponent key={index} observation={item} />;
               } else {
                 return (
                   <TrajectoryCard key={index}>

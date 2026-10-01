@@ -256,6 +256,19 @@ const JsonlViewer: React.FC<JsonlViewerProps> = ({ content }) => {
       return false;
     }
 
+    // Filter out delegate recall and instruction user messages
+    if (
+      item.source === "user" &&
+      typeof item.message === "string" &&
+      ((item.action === "recall" &&
+        item.message.startsWith("Retrieving content for:") &&
+        item.args?.recall_type === "knowledge") ||
+        (item.action === "message" &&
+          item.message.startsWith("Carefully check whether all key information is provided.")))
+    ) {
+      return false;
+    }
+
     // Keep all other items
     return true;
   };
